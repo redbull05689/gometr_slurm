@@ -26,6 +26,7 @@ $ make lint
 Для более подробной информации о том, как строить структуру файлов и папок для проекта на GO читайте по [ссылке](https://github.com/golang-standards/project-layout)
 
 ### http Методы
+Приложение стартует на порту 8000. После запуска будет доступен по url localhost:8000
 * /metrics - отдает go метрики (согласно протоколу prometheus)
 * /health - сокращенный формат ответа ([полный формат](https://tools.ietf.org/id/draft-inadarei-api-health-check-01.html))
 ```json
