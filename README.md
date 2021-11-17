@@ -13,13 +13,13 @@ $ make install
 $ make run
 ```
 
-### Linter
+### Линтер
 Для запуска линтера, перейдите в корень проекта и выполните следующую команду 
 ```
 $ make lint
 ```
 
-### Folders
+### Структура папок
 * ./config - папка с конфигами приложения
     * gometr.conf.yaml - в этом файле можно сконфигурировать порт, на котором запустится приложение
 
@@ -34,11 +34,11 @@ $ make lint
 ### http Методы
 Приложение стартует на порту 8000. После запуска будет доступен по url localhost:8000
 * /metrics - отдает go метрики (согласно протоколу prometheus)
-* /health - сокращенный формат ответа ([полный формат](https://tools.ietf.org/id/draft-inadarei-api-health-check-01.html))
+* /health - сокращенный формат ответа стандарта хелсчека ([полный формат](https://tools.ietf.org/id/draft-inadarei-api-health-check-01.html))
 ```json
 {
      "status": "pass",
-     "service_id": "MBPadmincity101",
+     "service_id": "gometr",
      "checks": {
          "ping_mysql": {
              "component_id": "mysql",
