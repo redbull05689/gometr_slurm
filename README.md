@@ -38,7 +38,7 @@ $ make lint
 ```json
 {
      "status": "pass",
-     "service_id": "MBPadmincity101",
+     "service_id": "gometr",
      "checks": {
          "ping_mysql": {
              "component_id": "mysql",
