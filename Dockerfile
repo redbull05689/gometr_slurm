@@ -10,8 +10,6 @@ RUN go mod download
 
 COPY . ./
 
-RUN ls -la
-
 RUN CGO_ENABLED=0 go build -o /metr ./cmd/server/main.go
 
 ##
