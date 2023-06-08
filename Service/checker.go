@@ -15,7 +15,7 @@ type Checkable interface {
 
 // Checker structure
 type Checker struct {
-	Targets []Checkable
+	targets []Checkable
 }
 
 // check performs a Health check on the passed Checkable interface
@@ -26,12 +26,12 @@ func (ch *Checker) check(ctx context.Context, c Checkable) {
 }
 
 func (ch *Checker) Add(item Checkable) {
-	ch.Targets = append(ch.Targets, item)
+	ch.targets = append(ch.targets, item)
 }
 
 func (ch *Checker) String() string {
 	var result strings.Builder
-	for _, value := range ch.Targets {
+	for _, value := range ch.targets {
 		result.WriteString(fmt.Sprintf("%s ", value.GetID()))
 
 	}
@@ -39,7 +39,7 @@ func (ch *Checker) String() string {
 }
 
 func (ch *Checker) Check() {
-	for _, value := range ch.Targets {
+	for _, value := range ch.targets {
 		fmt.Println(value.Health(context.Background()))
 	}
 }
