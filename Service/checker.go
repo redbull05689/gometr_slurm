@@ -3,7 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
+	"sync"
+	"time"
 )
 
 // Checkable interface
@@ -16,6 +19,8 @@ type Checkable interface {
 // Checker structure
 type Checker struct {
 	targets []Checkable
+	sync.Mutex
+	cf context.CancelFunc
 }
 
 // check performs a Health check on the passed Checkable interface
@@ -26,6 +31,8 @@ func (ch *Checker) check(ctx context.Context, c Checkable) {
 }
 
 func (ch *Checker) Add(item Checkable) {
+	ch.Lock()
+	defer ch.Unlock()
 	ch.targets = append(ch.targets, item)
 }
 
@@ -45,5 +52,49 @@ func (ch *Checker) Check() {
 }
 
 func MakeChecker() *Checker {
-	return &Checker{}
+	return &Checker{
+		Mutex:   sync.Mutex{},
+		targets: make([]Checkable, 0),
+	}
+}
+
+func (ch *Checker) Run(ctx context.Context) {
+	ctx, cancel := context.WithCancel(ctx)
+	go ch.run(ctx)
+	log.Println("Checker started")
+	ch.cf = cancel
+	return
+}
+
+func (ch *Checker) Stop() {
+	if ch.cf != nil {
+		ch.cf()
+	}
+	log.Println("Checker stopped")
+}
+
+func (ch *Checker) run(ctx context.Context) {
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			ch.checkAll(ctx)
+		}
+	}
+}
+
+func (ch *Checker) checkAll(ctx context.Context) {
+	ch.Lock()
+	defer ch.Unlock()
+	for _, item := range ch.targets {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			go item.Health(ctx)
+		}
+	}
 }
